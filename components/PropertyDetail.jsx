@@ -93,7 +93,7 @@ const PropertyDetail = ({property}) => {
               >
                 {
                     amenities.map((amenity, index) => (
-                        <li>
+                        <li key={amenity}>
                          <FaCheck className="inline-block text-green-500 mr-2"/> {amenity}
                        </li>
                     ))

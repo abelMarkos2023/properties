@@ -1,17 +1,33 @@
 'use client'
 
+import { getProviders, signIn, signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {FaGoogle} from 'react-icons/fa'
 
 const Navabr = () => {
+  const {data:session} = useSession();
+  const [providers,setProviders] = useState(null);
+
+  console.log('session',session)
+  console.log('providers',providers)
 
     const [openMenu,setOpenMenu] = useState(false);
-    const [isLoggedIn,setIsLoggedIn] = useState(false);
+    const [profileOpen,setProfileOpen] = useState(false);
     const pathname = usePathname();
+
+    useEffect(() => {
+
+      const getAppProviders = async () => {
+        const res = await getProviders();
+        setProviders(res);
+      } 
+
+      getAppProviders();
+    },[])
   return (
      <nav className="bg-blue-700 border-b border-blue-500">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -83,21 +99,28 @@ const Navabr = () => {
           </div>
 
           {/* <!-- Right Side Menu (Logged Out) --> */}
-          {!isLoggedIn && (
+          {!session && (
             <div className="hidden md:block md:ml-6">
             <div className="flex items-center">
-              <button
-                className="flex cursor-pointer items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
+              {
+                providers && Object.values(providers).map(provider => (
+                  <button
+                      key={provider.id}
+                      onClick = {() => signIn(provider.id)}
+                      className="flex cursor-pointer items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2"
               >
                 <FaGoogle className="mr-2" />
                 <span>Login or Register</span>
               </button>
+                ))
+              }
+              
             </div>
           </div>
           )}
 
           {/* <!-- Right Side Menu (Logged In) --> */}
-          {isLoggedIn && (
+          {session && (
             <div
             className="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0"
           >
@@ -139,6 +162,7 @@ const Navabr = () => {
                   id="user-menu-button"
                   aria-expanded="false"
                   aria-haspopup="true"
+                  onClick = {() => setProfileOpen(!profileOpen)}
                 >
                   <span className="absolute -inset-1.5"></span>
                   <span className="sr-only">Open user menu</span>
@@ -146,16 +170,18 @@ const Navabr = () => {
                     width={32}
                     height={32}
                     className="h-8 w-8 rounded-full"
-                    src="/profile.png"
+                    src={session.user.image}
                     alt=""
                   />
                 </button>
               </div>
 
               {/* <!-- Profile dropdown --> */}
-              <div
+              {
+                profileOpen && (
+                  <div
                 id="user-menu"
-                className="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="user-menu-button"
@@ -176,14 +202,17 @@ const Navabr = () => {
                   id="user-menu-item-2"
                   >Saved Properties</Link>
                 <button
-                  className="block px-4 py-2 text-sm text-gray-700"
+                  className="block px-4 py-2 text-sm text-gray-700 cursor-pointer"
                   role="menuitem"
                    tabIndex="-1"
                   id="user-menu-item-2"
+                  onClick = {() => signOut()}
                 >
                   Sign Out
                 </button>
               </div>
+                )
+              }
             </div>
           </div>
           )}
@@ -209,7 +238,7 @@ const Navabr = () => {
             className={`${pathname==='/properties/add'?'bg-black':''} text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2` }
             >Add Property</Link>
           {
-            !isLoggedIn && (
+            !session && (
                 <button
             className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2 my-5"
           >
