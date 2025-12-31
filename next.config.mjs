@@ -1,12 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   /* config options here */
-  images:{
-    remotePatterns:[
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb', // or '5mb'
+    },
+  },
+  images: {
+    remotePatterns: [
       {
-        protocol:'https',
-        hostname:'lh3.googleusercontent.com',
-        port:''
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: ''
       }
     ]
   }

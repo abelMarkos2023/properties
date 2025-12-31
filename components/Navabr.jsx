@@ -12,8 +12,6 @@ const Navabr = () => {
   const {data:session} = useSession();
   const [providers,setProviders] = useState(null);
 
-  console.log('session',session)
-  console.log('providers',providers)
 
     const [openMenu,setOpenMenu] = useState(false);
     const [profileOpen,setProfileOpen] = useState(false);

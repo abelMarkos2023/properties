@@ -19,13 +19,15 @@ const PropertyCard = ({property}) => {
 
         }
     }
+            const imgUrl = property.images[0].startsWith('http') ? property.images[0] : `/properties/${property.images[0]}`;
+
   return (
      <div className="rounded-xl shadow-md relative">
             <Image
             width={0}
             height={0}
             sizes="100vw"
-              src={`/properties/${property.images[0]}`}
+              src={imgUrl}
               alt=""
               className="w-full h-auto rounded-t-xl"
             />
