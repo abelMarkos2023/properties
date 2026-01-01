@@ -191,6 +191,7 @@ const Navabr = () => {
                   role="menuitem"
                    tabIndex="-1"
                   id="user-menu-item-0"
+                  onClick = {() => setProfileOpen(false)}
                   >Your Profile</Link>
                 <Link
                   href="/saved-properties"
@@ -198,6 +199,7 @@ const Navabr = () => {
                   role="menuitem"
                    tabIndex="-1"
                   id="user-menu-item-2"
+                  onClick = {() => setProfileOpen(false)}
                   >Saved Properties</Link>
                 <button
                   className="block px-4 py-2 text-sm text-gray-700 cursor-pointer"

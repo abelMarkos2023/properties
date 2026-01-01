@@ -78,3 +78,106 @@ export async function createProperty(data) {
 
     return redirect(`/properties/${newProperty._id}`);
 }
+
+export async function deleteProperty(propertyId){
+    const session = await getSessionUser();
+
+    if(!session || !session.userId){
+        throw new Error('user not authenticated')
+    }
+
+    await connectDB();
+    const property = await Property.findById(propertyId);
+
+    if(!property){
+        throw new Error('Property not found')
+    }
+    if(property.owner.toString() !== session.userId){
+        throw new Error('Unauthorized')
+    }
+
+    
+
+    const publicIds = property.images.map((imgUrl) => {
+        const parts = imgUrl.split('/');
+        const fileName = parts[parts.length -1];
+        const publicId = fileName.split('.')[0];
+        return `property-pulse/${publicId}`;
+    });
+
+    for (let publicId of publicIds){
+        await cloudinary.uploader.destroy(publicId);
+    }
+
+    await Property.findByIdAndDelete(propertyId);
+
+    revalidatePath('/','layout');
+}
+
+export async function getPropertyById(propertyId){
+     const session = await getSessionUser();
+
+    if(!session || !session.userId){
+        throw new Error('user not authenticated')
+    }
+
+    await connectDB();
+    const property = await Property.findById(propertyId);
+
+    if(!property){
+        throw new Error('Property not found')
+    }
+    if(property.owner.toString() !== session.userId){
+        throw new Error('Unauthorized')
+    }
+
+    return property;
+
+}
+
+export async function updateProperty(propertyId, data){
+    const ameneties = data.getAll('amenities') // Get all selected amenities
+
+    const session = await getSessionUser();
+
+    if(!session || !session.userId){
+        throw new Error('user not authenticated')
+    }   
+    const userId = session.userId;
+
+    await connectDB();
+    const property =  await Property.findById(propertyId);
+
+    if(!property){
+        throw new Error('Property not found')
+    }
+    if(property.owner.toString() !== userId){
+        throw new Error('Unauthorized')
+    }
+    property.name = data.get('name');
+    property.dscription = data.get('description');
+    property.type = data.get('type');
+    property.location = {
+        street : data.get('location.street'),
+        city : data.get('location.city'),
+        state : data.get('location.state'),
+        zipcode : data.get('location.zipcode'),
+    };
+    property.beds = data.get('beds');
+    property.baths = data.get('baths');
+    property.square_feet = data.get('square_feet');
+    property.amenities = ameneties;
+    property.rates = {
+        weekly : data.get('rates.weekly'),
+        monthly : data.get('rates.monthly'),
+        yearly : data.get('rates.yearly'),
+    };
+    property.seller_info = {
+        name : data.get('seller_info.name'),
+        email : data.get('seller_info.email'),
+        phone : data.get('seller_info.phone'),
+    };
+    await property.save();
+    revalidatePath('/','layout');   
+    return redirect(`/properties/${property._id}`);
+}
