@@ -19,7 +19,7 @@ const PropertyImages = ({images}) => {
                 {images.map((image, index) => (
                   <Image
                     key={index}
-                    src={image}
+                    src={image.startsWith('http') ? image : `/uploads/${image}`}
                     alt=""
                     width={1800}
                     height={400}

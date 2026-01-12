@@ -1,9 +1,19 @@
+"use client"
+
 import React from 'react'
 import { FaCheck, FaMapMarker, FaRulerCombined, FaSquare, FaTimes } from 'react-icons/fa';
+
+import dynamic from "next/dynamic";
+
+const PropertyMap = dynamic(() => import("@/components/PropertyMap"), {
+    ssr: false 
+});
+
 
 const PropertyDetail = ({property}) => {
     const {name,type,location,beds,baths,square_feet,description,rates,amenities} = property;
   return (
+    <>
     <main>
             <div
               className="bg-white p-6 rounded-lg shadow-md text-center md:text-left"
@@ -106,6 +116,8 @@ const PropertyDetail = ({property}) => {
               <div id="map"></div>
             </div>
           </main>
+          <PropertyMap lat={property.lat} lng={property.lng} />
+          </>
 
   )
 }

@@ -87,6 +87,23 @@ const PropertyAddForm = () => {
                 className="border rounded w-full py-2 px-3 mb-2"
                 placeholder="Zipcode"
               />
+
+              <input
+                type="text"
+                id="lat"
+                name="lat"
+                className="border rounded w-full py-2 px-3 mb-2"
+                placeholder="Latitude"
+                required
+              />
+              <input
+                type="text"
+                id="lng"
+                name="lng"
+                className="border rounded w-full py-2 px-3 mb-2"
+                placeholder="Longitude"
+                required
+              />
             </div>
 
             <div className="mb-4 flex flex-wrap">

@@ -3,6 +3,7 @@
 import cloudinary from "@/config/cloudinary";
 import connectDB from "@/config/connectDB";
 import Property from "@/models/Property";
+import User from "@/models/User";
 import { getSessionUser } from "@/utils/functions";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -22,7 +23,7 @@ export async function createProperty(data) {
     const propertyData = {
         owner:userId,
         name: data.get('name'),
-        dscription: data.get('description'),
+        description: data.get('description'),
         type: data.get('type'),
         location: {
             street : data.get('location.street'),
@@ -30,6 +31,8 @@ export async function createProperty(data) {
             state: data.get('location.state'),
             zipcode: data.get('location.zipcode'),
         },
+        lat: Number(data.get('lat')),
+        lng: Number(data.get('lng')),
         beds: data.get('beds'),
         baths: data.get('baths'),
         square_feet: data.get('square_feet'),
@@ -180,4 +183,57 @@ export async function updateProperty(propertyId, data){
     await property.save();
     revalidatePath('/','layout');   
     return redirect(`/properties/${property._id}`);
+}
+
+
+export async function toggeleBookmarkedProperty(propertyId){
+
+    const session = await getSessionUser();
+
+    if(!session || !session.userId){
+        throw new Error('user not authenticated')
+    }
+
+    const userId = session.userId;
+
+    await connectDB();
+    const user = await User.findById(userId);
+
+    const isBookmarked = user.bookmark.includes(propertyId);
+    let message;
+    let bookmarked;
+
+    if(isBookmarked){
+        user.bookmark = user.bookmark.filter(id => id.toString() !== propertyId.toString());
+        message = 'bookmark removed';
+        bookmarked = false;
+    }else{
+        user.bookmark.push(propertyId);
+        message = 'bookmark add successfully';
+        bookmarked = true;
+    }
+
+    await user.save();
+
+    revalidatePath('/','page');
+
+    return {
+        message,bookmarked
+    }
+}
+
+export async function checkBookmarkStatus(propertyId){
+
+    const session = await getSessionUser();
+
+    if(!session || !session.userId){
+        throw new Error("User Not Authenticated")
+    }
+
+    const userId = session.userId;
+
+    const user = await User.findById(userId);
+
+    const isBookmarked = user.bookmark.includes(propertyId);
+    return {isBookmarked};
 }

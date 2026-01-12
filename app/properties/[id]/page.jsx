@@ -1,6 +1,9 @@
+import BookmarkButton from "@/components/BookmarkButton";
+import PropertyContactForm from "@/components/PropertyContactForm";
 import PropertyDetail from "@/components/PropertyDetail";
 import PropertyHeaderImage from "@/components/PropertyHeaderImage";
 import PropertyImages from "@/components/PropertyImages";
+import ShareButtons from "@/components/ShareButtons";
 import connectDB from "@/config/connectDB";
 import Property from "@/models/Property";
 import Link from "next/link";
@@ -13,7 +16,9 @@ const page = async ({ params }) => {
 
   const { id } = await params;
 
-  const property = await Property.findById(id).lean();
+  const propertyDoc = await Property.findById(id).lean();
+
+  const property = JSON.parse(JSON.stringify(propertyDoc));
 
   if (!property) return notFound();
 
@@ -37,9 +42,15 @@ const page = async ({ params }) => {
             {/* <!-- Property Details --> */}
             <div className="md:col-span-2">
                 <PropertyDetail property={property} />
+
+                {/* Map goes here */}
             </div>
             
-          
+          <aside className="space-y-4">
+             <BookmarkButton property={property} />
+          <ShareButtons property={property} />
+          <PropertyContactForm property={property} />
+          </aside>
           </div>
           <PropertyImages images={property.images} />
         </div>

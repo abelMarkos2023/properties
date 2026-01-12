@@ -1,4 +1,4 @@
-import { Mongoose,Schema,model,models } from "mongoose";
+import { Schema,model,models } from "mongoose";
 
 const userSchema = new Schema({
     email:{
@@ -15,7 +15,7 @@ const userSchema = new Schema({
     },
     bookmark:[
         {
-        type:[Schema.Types.ObjectId],
+        type:Schema.Types.ObjectId,
         ref:"Property",
         
     }

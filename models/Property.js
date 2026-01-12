@@ -15,7 +15,7 @@ const propertySchema = new Schema(
         type:String,
         required:true,
     },
-    dscription:{
+    description:{
         type:String,
         required:true,
     },
@@ -24,6 +24,7 @@ const propertySchema = new Schema(
         city:{type:String,required:true},
         state:{type:String,required:true},
         zipcode:{type:String,required:true},
+        
     },
     beds:{type:Number,required:true},
     baths:{type:Number,required:true},
@@ -41,6 +42,8 @@ const propertySchema = new Schema(
     },
     images:[String],
     is_featured:{type:Boolean,default:false},
+    lat:{type:Number,required:true},
+    lng:{type:Number,required:true},
 },{
     timestamps:true
 });
