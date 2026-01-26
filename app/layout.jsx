@@ -4,6 +4,7 @@ import Navabr from "@/components/Navabr";
 import Footer from "@/components/Footer";
 import AuthProvider from "@/components/AuthProvider";
 import { ToastContainer } from "react-toastify";
+import { GlobalContextProvider } from "@/contexts/GlobalContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +25,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <AuthProvider>
+      <GlobalContextProvider>
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen `}
@@ -37,6 +39,7 @@ export default function RootLayout({ children }) {
         <Footer />
       </body>
     </html>
+    </GlobalContextProvider>
     </AuthProvider>
   );
 }
