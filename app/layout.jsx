@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import AuthProvider from "@/components/AuthProvider";
 import { ToastContainer } from "react-toastify";
 import { GlobalContextProvider } from "@/contexts/GlobalContext";
+import "photoswipe/dist/photoswipe.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

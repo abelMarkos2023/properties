@@ -3,6 +3,7 @@ import PropertyContactForm from "@/components/PropertyContactForm";
 import PropertyDetail from "@/components/PropertyDetail";
 import PropertyHeaderImage from "@/components/PropertyHeaderImage";
 import PropertyImages from "@/components/PropertyImages";
+import PropertyMap from "@/components/PropertyMap";
 import ShareButtons from "@/components/ShareButtons";
 import connectDB from "@/config/connectDB";
 import Property from "@/models/Property";
@@ -52,6 +53,8 @@ const page = async ({ params }) => {
           <PropertyContactForm property={property} />
           </aside>
           </div>
+          <hr className="my-6" />
+          
           <PropertyImages images={property.images} />
         </div>
       </section>
